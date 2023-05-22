@@ -1,11 +1,37 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
-import styles from '@/styles/Home.module.css'
+import Head from "next/head";
+import Image from "next/image";
+import { Inter } from "next/font/google";
+import styles from "@/styles/Home.module.css";
+import { UserService } from "@/services/userService";
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
+  async function handleGoogleLogin() {
+    try {
+      const { data } = await UserService.logInWithGoogle();
+      window.location.assign(data.url);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function checkUser() {
+    try {
+      await UserService.getCurrentUser();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function handleLogOut() {
+    try {
+      await UserService.logOut();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return (
     <>
       <Head>
@@ -16,17 +42,16 @@ export default function Home() {
       </Head>
       <main className={`${styles.main} ${inter.className}`}>
         <div className={styles.description}>
-          <p>
-            Get started by editing&nbsp;
-            <code className={styles.code}>src/pages/index.tsx</code>
-          </p>
+          <button onClick={handleGoogleLogin}>Log in with Google;</button>
+          <button onClick={checkUser}>Check Session</button>
+          <button onClick={handleLogOut}>Log Out</button>
           <div>
             <a
               href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
               target="_blank"
               rel="noopener noreferrer"
             >
-              By{' '}
+              By{" "}
               <Image
                 src="/vercel.svg"
                 alt="Vercel Logo"
@@ -60,9 +85,7 @@ export default function Home() {
             <h2>
               Docs <span>-&gt;</span>
             </h2>
-            <p>
-              Find in-depth information about Next.js features and&nbsp;API.
-            </p>
+            <p>Find in-depth information about Next.js features and&nbsp;API.</p>
           </a>
 
           <a
@@ -74,9 +97,7 @@ export default function Home() {
             <h2>
               Learn <span>-&gt;</span>
             </h2>
-            <p>
-              Learn about Next.js in an interactive course with&nbsp;quizzes!
-            </p>
+            <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
           </a>
 
           <a
@@ -88,9 +109,7 @@ export default function Home() {
             <h2>
               Templates <span>-&gt;</span>
             </h2>
-            <p>
-              Discover and deploy boilerplate example Next.js&nbsp;projects.
-            </p>
+            <p>Discover and deploy boilerplate example Next.js&nbsp;projects.</p>
           </a>
 
           <a
@@ -102,13 +121,10 @@ export default function Home() {
             <h2>
               Deploy <span>-&gt;</span>
             </h2>
-            <p>
-              Instantly deploy your Next.js site to a shareable URL
-              with&nbsp;Vercel.
-            </p>
+            <p>Instantly deploy your Next.js site to a shareable URL with&nbsp;Vercel.</p>
           </a>
         </div>
       </main>
     </>
-  )
+  );
 }
